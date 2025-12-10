@@ -1,0 +1,127 @@
+services:
+  # Product Catalogue Service
+  product-service:
+    build:
+      context: ./product-catalogue-service
+      dockerfile: Dockerfile
+    image: ecommerce/product-service:v1.0
+    container_name: product-catalogue-service
+    ports:
+      - "8001:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@product-db:5432/products
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - product-db
+      - redis
+    networks:
+      - ecommerce-network
+
+  # User Authentication Service
+  auth-service:
+    build:
+      context: ./user-authentication-service
+      dockerfile: Dockerfile
+    image: ecommerce/auth-service:v1.0
+    container_name: user-authentication-service
+    ports:
+      - "8002:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@auth-db:5432/auth
+      - JWT_SECRET=your-secret-key-change-in-production
+    depends_on:
+      - auth-db
+    networks:
+      - ecommerce-network
+
+  # Order Processing Service
+  order-service:
+    build:
+      context: ./order-processing-service
+      dockerfile: Dockerfile
+    image: ecommerce/order-service:v1.0
+    container_name: order-processing-service
+    ports:
+      - "8003:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@order-db:5432/orders
+      - PRODUCT_SERVICE_URL=http://product-service:8000
+      - AUTH_SERVICE_URL=http://auth-service:8000
+    depends_on:
+      - order-db
+      - product-service
+      - auth-service
+    networks:
+      - ecommerce-network
+
+  # Databases
+  product-db:
+    image: postgres:15-alpine
+    container_name: product-database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=products
+    volumes:
+      - product-db-data:/var/lib/postgresql/data
+    networks:
+      - ecommerce-network
+
+  auth-db:
+    image: postgres:15-alpine
+    container_name: auth-database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auth
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    networks:
+      - ecommerce-network
+
+  order-db:
+    image: postgres:15-alpine
+    container_name: order-database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=orders
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    networks:
+      - ecommerce-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - ecommerce-network
+
+  # Frontend (static) for v1 stack
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ecommerce/frontend:v1.0
+    container_name: ecommerce-frontend-v1
+    ports:
+      - "3000:80"
+    depends_on:
+      - product-service
+      - auth-service
+      - order-service
+    networks:
+      - ecommerce-network
+
+volumes:
+  product-db-data:
+  auth-db-data:
+  order-db-data:
+
+networks:
+  ecommerce-network:
+    driver: bridge
+

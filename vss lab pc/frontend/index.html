@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce Demo UI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>E-commerce Microservices Demo (v2)</h1>
+
+    <section>
+      <h2>API Base URLs</h2>
+      <div class="grid two">
+        <label>
+          Product API
+          <input id="product-api" value="http://localhost:8001" />
+        </label>
+        <label>
+          Auth API
+          <input id="auth-api" value="http://localhost:8002" />
+        </label>
+        <label>
+          Order API
+          <input id="order-api" value="http://localhost:8003" />
+        </label>
+      </div>
+      <button id="save-config">Save API URLs</button>
+      <span id="config-status" class="status"></span>
+    </section>
+
+    <section>
+      <h2>Authentication</h2>
+      <div class="grid two">
+        <label>
+          Username
+          <input id="auth-username" placeholder="user2" />
+        </label>
+        <label>
+          Email (for register)
+          <input id="auth-email" placeholder="user2@test.com" />
+        </label>
+        <label>
+          Password
+          <input id="auth-password" type="password" placeholder="SecurePass123!@#" />
+        </label>
+        <label>
+          Role (optional)
+          <input id="auth-role" placeholder="customer" />
+        </label>
+      </div>
+      <div class="actions">
+        <button id="btn-register">Register</button>
+        <button id="btn-login">Login</button>
+      </div>
+      <div class="token-box">
+        <strong>Token:</strong>
+        <textarea id="jwt-token" rows="2" readonly></textarea>
+      </div>
+      <pre id="auth-output" class="output"></pre>
+    </section>
+
+    <section>
+      <h2>Products</h2>
+      <div class="grid three">
+        <label>
+          Name
+          <input id="prod-name" placeholder="Laptop" />
+        </label>
+        <label>
+          Price
+          <input id="prod-price" type="number" step="0.01" placeholder="999.99" />
+        </label>
+        <label>
+          Stock
+          <input id="prod-stock" type="number" placeholder="10" />
+        </label>
+        <label>
+          Category
+          <input id="prod-category" placeholder="Electronics" />
+        </label>
+        <label>
+          Discount %
+          <input id="prod-discount" type="number" step="1" placeholder="10" />
+        </label>
+        <label>
+          Image URL
+          <input id="prod-image" placeholder="https://example.com/item.jpg" />
+        </label>
+      </div>
+      <div class="actions">
+        <button id="btn-create-product">Create Product</button>
+        <button id="btn-list-products">List Products</button>
+      </div>
+      <div class="grid three">
+        <label>
+          Search
+          <input id="prod-search" placeholder="keyword" />
+        </label>
+        <label>
+          Category Filter
+          <input id="prod-filter-category" placeholder="Electronics" />
+        </label>
+        <label>
+          Sort By
+          <select id="prod-sort-by">
+            <option value="created_at">created_at</option>
+            <option value="price">price</option>
+            <option value="name">name</option>
+          </select>
+        </label>
+        <label>
+          Sort Order
+          <select id="prod-sort-order">
+            <option value="desc">desc</option>
+            <option value="asc">asc</option>
+          </select>
+        </label>
+        <label>
+          Page
+          <input id="prod-page" type="number" value="1" />
+        </label>
+        <label>
+          Per Page
+          <input id="prod-per-page" type="number" value="5" />
+        </label>
+      </div>
+      <pre id="products-output" class="output"></pre>
+    </section>
+
+    <section>
+      <h2>Orders</h2>
+      <p>Login first to get a token. Uses the token from the Auth section.</p>
+      <div class="grid two">
+        <label>
+          User ID (needed for v1 if not logged in)
+          <input id="order-user-id" type="number" placeholder="1" />
+        </label>
+        <label>
+          Use token (v2 flow)
+          <input id="order-use-token" type="checkbox" />
+        </label>
+        <label>
+          Product ID
+          <input id="order-product-id" type="number" placeholder="1" />
+        </label>
+        <label>
+          Quantity
+          <input id="order-qty" type="number" placeholder="1" />
+        </label>
+        <label>
+          Shipping Address
+          <input id="order-address" placeholder="123 Main St" />
+        </label>
+      </div>
+      <button id="btn-create-order">Create Order</button>
+      <pre id="orders-output" class="output"></pre>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
